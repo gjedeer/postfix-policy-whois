@@ -1,5 +1,29 @@
 #!/usr/bin/env python
 
+"""
+Postfix policy for querying sender WHOIS entry
+
+Port of https://github.com/purcell/postfix-policy-whois/ for these who don't think
+gems are easy for an administrator to deal with
+
+Large parts stolen from pypolicyd-spf source code
+
+in master.cf:
+whois     unix  -       n       n       -       1       spawn user=nobody argv=/policy-whois/policy-whois.py
+
+in main.cf:
+smtpd_recipient_restrictions =
+    reject_unauth_destination
+    check_policy_service unix:private/whois
+
+By default: blocks just created and just deleted domains, and freshmail.pl spinoff 
+domains which happen to have a correct administrative contact filled out
+
+Dedicated to Freshmail, whose countless emails made me interested in antispam technology.
+
+GPLv3
+"""
+
 import os
 import re
 import sys
