@@ -62,6 +62,9 @@ def check_data(data):
         for line in who.splitlines():
             syslog.syslog(line)
 
+    for regexp, message in WHOIS_BLACKLIST:
+        if regexp.search(who):
+            return('reject', message)
 
     return ('accept', 'Why the hell not')
 
@@ -125,3 +128,5 @@ except Exception, e:
     import traceback
     for line in traceback.format_exc().splitlines():
         syslog.syslog(line)
+except IOError:
+    syslog.syslog("Exiting - broken pipe")
